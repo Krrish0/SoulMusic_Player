@@ -12,14 +12,18 @@ import android.provider.MediaStore;
 
 public class MusicFetch {
 
+    public static final Uri EX_CONTENT_URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
-    public static Cursor getAudioCursor(Context mContext) {
+
+    public static Cursor getExternalAudioCursor(Context mContext) {
         ContentResolver contentResolver = mContext.getContentResolver();
 
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri uri = EX_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
         Cursor cursor = contentResolver.query(uri, null, selection, null, sortOrder);
         return cursor;
     }
+
+
 }

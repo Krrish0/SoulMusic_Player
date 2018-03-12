@@ -1,10 +1,12 @@
 package dark.ash.com.soulmusicplayer.data;
 
+import android.net.Uri;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import dark.ash.com.soulmusicplayer.R;
  */
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
 
+
     private List<MediaMetadataCompat> mSongList;
 
 
@@ -33,8 +36,16 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         String title = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_TITLE);
         String album = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_ALBUM);
-        String artist = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
-        holder.songText.append(" " + album);
+        String albumImage = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
+        String genre = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_GENRE);
+
+        holder.songTitle.setText(title);
+        holder.songAlbum.setText(album);
+        holder.songGenre.setText(genre);
+        if (albumImage != null) {
+            Uri imageUri = Uri.parse(albumImage);
+            holder.songAlbumImage.setImageURI(imageUri);
+        }
     }
 
     @Override
@@ -52,11 +63,19 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView songText;
+
+        public ImageView songAlbumImage;
+        public TextView songTitle;
+        public TextView songAlbum;
+        public TextView songGenre;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            songText = itemView.findViewById(R.id.media_item_name);
+
+            songAlbumImage = itemView.findViewById(R.id.image_album_art_icon);
+            songTitle = itemView.findViewById(R.id.media_title_name);
+            songAlbum = itemView.findViewById(R.id.media_title_album);
+            songGenre = itemView.findViewById(R.id.media_title_genre);
         }
     }
 }

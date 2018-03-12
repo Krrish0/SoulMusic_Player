@@ -1,43 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="?attr/listPreferredItemHeightSmall">
-    <!--
+    android:layout_height="?attr/listPreferredItemHeight">
+
     <ImageView
-        android:id="@+id/image_media"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/image_media"
-        android:paddingLeft="8dp"
-        android:paddingTop="8dp"
-        android:orientation="vertical"
-        android:layout_toEndOf="@id/image_media"
-        android:paddingStart="8dp">
+        android:id="@+id/image_album_art_icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp" />
+
+
     <TextView
         android:id="@+id/media_title_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Song Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_toRightOf="@id/image_album_art_icon"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        tools:text="Song Name" />
+
     <TextView
-        android:paddingTop="4dp"
+        android:id="@+id/media_title_genre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_toRightOf="@id/image_album_art_icon"
+        android:paddingBottom="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-        tools:text="3.32min"
-        />
-    </LinearLayout>
-    -->
+        tools:text="Genre" />
+
     <TextView
-        android:id="@+id/media_item_name"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp" />
+        android:id="@+id/media_title_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toRightOf="@id/media_title_genre"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        tools:text="Album" />
+
 
 </RelativeLayout>
