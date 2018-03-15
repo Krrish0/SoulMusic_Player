@@ -5,8 +5,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore.Audio;
 import android.support.v4.media.MediaMetadataCompat;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import dark.ash.com.soulmusicplayer.utils.MusicFetch;
 
@@ -14,25 +16,27 @@ import dark.ash.com.soulmusicplayer.utils.MusicFetch;
  * Created by hp on 10-03-2018.
  */
 
-public class LocalDataProvider {
+public class LocalDataProvider implements MusicProviderSource {
 
     private static final String TAG = LocalDataProvider.class.getSimpleName();
 
     private Context mContext;
 
-    public LocalDataProvider(Context context) {
-        this.mContext = context;
-    }
     //MediaMetadataCompat Class to store the metadaa of the Audio File
     //this class returns the ArrayList of the metadata of the mediaFile.
 
-    public ArrayList<MediaMetadataCompat> iterator() {
+    public LocalDataProvider(Context context) {
+        this.mContext = context;
+    }
+
+    @Override
+    public Iterator<MediaMetadataCompat> iterator() {
         Cursor cursor = MusicFetch.getExternalAudioCursor(mContext);
         ArrayList<MediaMetadataCompat> tracks = new ArrayList<>();
         if (cursor != null && cursor.getCount() > 0) {
             tracks.addAll(buildfromCursor(cursor));
         }
-        return tracks;
+        return tracks.iterator();
     }
 
     //A Helper function that is used to Create a ArrayList
@@ -44,6 +48,7 @@ public class LocalDataProvider {
         while (cursor.moveToNext()) {
             try {
                 String path = cursor.getString(cursor.getColumnIndex(Audio.Media.DATA));
+                Log.e(TAG, path);
                 int mediaId = cursor.getInt(cursor.getColumnIndex(Audio.Media._ID));
                 String artist = cursor.getString(cursor.getColumnIndex(Audio.Media.ARTIST));
                 String albumKey = cursor.getString(cursor.getColumnIndex(Audio.Media.ALBUM_KEY));
@@ -55,10 +60,11 @@ public class LocalDataProvider {
                     genre = "Unknown";
                 }
                 long duration = cursor.getLong(cursor.getColumnIndex(Audio.Media.DURATION));
+                String Id = String.valueOf(path.hashCode());
 
 
                 MediaMetadataCompat mediaData = new MediaMetadataCompat.Builder()
-                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, String.valueOf(mediaId))
+                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, Id)
                         .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                         .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
                         .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
@@ -80,9 +86,15 @@ public class LocalDataProvider {
         String stringGenre = null;
 
         Cursor genreCursor = mContext.getContentResolver().query(uri, null, null, null, null);
-        if (genreCursor.moveToFirst()) {
-            stringGenre = genreCursor.getString(genreCursor.getColumnIndex(Audio.Genres.NAME));
-            return stringGenre;
+        try {
+            if (genreCursor.moveToFirst()) {
+                stringGenre = genreCursor.getString(genreCursor.getColumnIndex(Audio.Genres.NAME));
+                return stringGenre;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            genreCursor.close();
         }
 
         return stringGenre;
@@ -95,9 +107,16 @@ public class LocalDataProvider {
         String selection = Audio.Albums.ALBUM_KEY + " = ?";
         String[] selectionArgs = {albumKey};
         Cursor albumCursor = mContext.getContentResolver().query(uri, null, selection, selectionArgs, null);
-        if (albumCursor.moveToFirst()) {
-            albumArtImage = albumCursor.getString(albumCursor.getColumnIndex(Audio.Albums.ALBUM_ART));
+        try {
+            if (albumCursor.moveToFirst()) {
+                albumArtImage = albumCursor.getString(albumCursor.getColumnIndex(Audio.Albums.ALBUM_ART));
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } finally {
+            albumCursor.close();
         }
+
         return albumArtImage;
     }
 }
