@@ -1,6 +1,8 @@
 package dark.ash.com.soulmusicplayer.data;
 
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,27 +27,33 @@ import dark.ash.com.soulmusicplayer.R;
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
 
 
-    private List<MediaMetadataCompat> mSongList;
+    private List<MediaBrowserCompat.MediaItem> mSongList;
 
 
-    public PlayerAdapter(ArrayList<MediaMetadataCompat> songList) {
-        mSongList = songList;
+    public PlayerAdapter(ArrayList<MediaBrowserCompat.MediaItem> songList) {
+        this.mSongList = songList;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String title = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_TITLE);
-        String album = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_ALBUM);
-        String albumImage = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
-        String genre = mSongList.get(position).getString(MediaMetadataCompat.METADATA_KEY_GENRE);
+        String title = mSongList.get(position).getDescription().getTitle().toString();
+        Bundle bundle = mSongList.get(position).getDescription().getExtras();
+        String album = bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Unknown");
+        Uri albumImage = mSongList.get(position).getDescription().getIconUri();
+        String genre = bundle.getString(MediaMetadataCompat.METADATA_KEY_GENRE, "Unknown");
 
         holder.songTitle.setText(title);
         holder.songAlbum.setText(album);
         holder.songGenre.setText(genre);
         if (albumImage != null) {
-            Uri imageUri = Uri.parse(albumImage);
-            holder.songAlbumImage.setImageURI(imageUri);
+            holder.songAlbumImage.setImageURI(albumImage);
         }
+
+    }
+
+    public void updateList(List<MediaBrowserCompat.MediaItem> items) {
+        mSongList = items;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -61,7 +69,11 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         return viewHolder;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public interface AdapterClickListener {
+        void onItemClicked();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
         public ImageView songAlbumImage;
@@ -72,10 +84,19 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
 
+            itemView.setOnClickListener(this);
             songAlbumImage = itemView.findViewById(R.id.image_album_art_icon);
             songTitle = itemView.findViewById(R.id.media_title_name);
             songAlbum = itemView.findViewById(R.id.media_title_album);
             songGenre = itemView.findViewById(R.id.media_title_genre);
         }
+
+        @Override
+        public void onClick(View v) {
+
+            int clickedPosition = getAdapterPosition();
+        }
+
     }
+
 }

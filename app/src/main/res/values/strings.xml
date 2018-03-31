@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Soul Music Player</string>
+    <string name="browse_musics_by_genre_subtitle">%1$s songs</string>
+    <string name="browse_genres">Genres</string>
+    <string name="random_queue_title">Random music</string>
+    <string name="search_queue_title">Search results</string>
+    <string name="browse_musics_by_all_songs">All Songs</string>
+    <string name="browse_genre_subtitle">Songs by genre</string>
 </resources>

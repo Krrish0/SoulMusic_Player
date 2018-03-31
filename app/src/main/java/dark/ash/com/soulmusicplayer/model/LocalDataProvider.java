@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore.Audio;
 import android.support.v4.media.MediaMetadataCompat;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,6 +16,9 @@ import dark.ash.com.soulmusicplayer.utils.MusicFetch;
  */
 
 public class LocalDataProvider implements MusicProviderSource {
+    //TODO Use a cursor Loader to implement this class so that we
+    //can monitor the changes made to the main Database Program
+
 
     private static final String TAG = LocalDataProvider.class.getSimpleName();
 
@@ -48,7 +50,6 @@ public class LocalDataProvider implements MusicProviderSource {
         while (cursor.moveToNext()) {
             try {
                 String path = cursor.getString(cursor.getColumnIndex(Audio.Media.DATA));
-                Log.e(TAG, path);
                 int mediaId = cursor.getInt(cursor.getColumnIndex(Audio.Media._ID));
                 String artist = cursor.getString(cursor.getColumnIndex(Audio.Media.ARTIST));
                 String albumKey = cursor.getString(cursor.getColumnIndex(Audio.Media.ALBUM_KEY));
@@ -64,6 +65,7 @@ public class LocalDataProvider implements MusicProviderSource {
 
 
                 MediaMetadataCompat mediaData = new MediaMetadataCompat.Builder()
+                        .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE, path)
                         .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, Id)
                         .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                         .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, album)

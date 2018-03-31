@@ -47,11 +47,15 @@ public interface Playback {
     /**
      * @return pos if currently playing an item
      */
-    void play(MediaSessionCompat.QueueItem item);
+    void play(MediaSessionCompat.QueueItem queueItem);
 
     void pause();
 
     void seekTo(long position);
+
+    long getCurrentStreamPosition();
+
+    void updateLastKnownStreamPosition();
 
     String getCurrentMediaId();
 
