@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         tools:text="Shape of You"
-        tools:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
     <TextView
         android:id="@+id/text_view_artist"
@@ -20,6 +20,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         tools:text="Ed Sheeran"
-        tools:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
 </LinearLayout>

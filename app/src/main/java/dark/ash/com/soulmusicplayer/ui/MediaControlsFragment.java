@@ -1,5 +1,8 @@
 package dark.ash.com.soulmusicplayer.ui;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -55,6 +58,14 @@ public class MediaControlsFragment extends Fragment {
         mSongTitle = rootView.findViewById(R.id.song_name);
         mSongArtist = rootView.findViewById(R.id.song_genre);
         mDuration = rootView.findViewById(R.id.song_length);
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FullScreenPlayerActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
         return rootView;
     }
 
@@ -102,7 +113,9 @@ public class MediaControlsFragment extends Fragment {
         mSongArtist.setText(metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
         String time = TimeUtils.longToTime(metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
         mDuration.setText(time);
-
+        String albumPath = metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
+        Bitmap albumBitmap = BitmapFactory.decodeFile(albumPath);
+        mSongAlbumArt.setImageBitmap(albumBitmap);
     }
 
     private void onPlaybackStateChanged(PlaybackStateCompat state) {

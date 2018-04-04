@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin_small">8dp</dimen>
+    <dimen name="activity_horizotal_margin_large">16dp</dimen>
+    <dimen name="controls_play_button_height">64dp</dimen>
+    <dimen name="controls_play_button_width">64dp</dimen>
+    <dimen name="controls_button_height">32dp</dimen>
+    <dimen name="controls_button_width">32dp</dimen>
+    <dimen name="layout_defaul_margin">8dp</dimen>
+    <dimen name="activity_default_margin_left">8dp</dimen>
+    <dimen name="activity_default_margin_right">8dp</dimen>
+    <dimen name="activity_default_margin_top">8dp</dimen>
+    <dimen name="activity_default_margin_bottom">8dp</dimen>
+    <dimen name="view_padding_default_all">8dp</dimen>
+</resources>
