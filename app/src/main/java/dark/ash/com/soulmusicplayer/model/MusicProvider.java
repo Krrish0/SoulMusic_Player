@@ -272,10 +272,13 @@ public class MusicProvider {
     private MediaBrowserCompat.MediaItem createMediaItem(MediaMetadataCompat metadata) {
         Log.e(TAG, "createMediaItem is Called");
         String genre = metadata.getString(MediaMetadataCompat.METADATA_KEY_GENRE);
+        String albumUri = metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
+        Log.e(TAG, "" + metadata.getDescription());
         String hierarchyAwareMediaID = MediaIDHelper.createMediaID(metadata.getDescription().getMediaId(), MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE, genre);
         MediaMetadataCompat copy = new MediaMetadataCompat.Builder(metadata)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, hierarchyAwareMediaID)
                 .build();
+        albumUri = copy.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
         return new MediaBrowserCompat.MediaItem(copy.getDescription(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE);
     }
 

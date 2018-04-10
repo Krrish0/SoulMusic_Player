@@ -6,4 +6,5 @@
     <string name="search_queue_title">Search results</string>
     <string name="browse_musics_by_all_songs">All Songs</string>
     <string name="browse_genre_subtitle">Songs by genre</string>
+    <string name="menu_queue_music">Queue Music</string>
 </resources>

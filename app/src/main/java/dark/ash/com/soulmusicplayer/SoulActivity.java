@@ -27,7 +27,6 @@ public class SoulActivity extends BaseActivity implements MediaBrowserFragment.M
         super.onCreate(savedInstanceState);
         Log.e(TAG, "Activity onCreate");
         setContentView(R.layout.activity_soul);
-
         initializeFromParams(savedInstanceState, getIntent());
     }
 
@@ -113,4 +112,5 @@ public class SoulActivity extends BaseActivity implements MediaBrowserFragment.M
         //TODO Add functionality of SearchParameters Later
         getBrowseFragment().onConnected();
     }
+
 }

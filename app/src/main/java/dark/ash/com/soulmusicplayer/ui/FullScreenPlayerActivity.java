@@ -1,25 +1,29 @@
 package dark.ash.com.soulmusicplayer.ui;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -27,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import dark.ash.com.soulmusicplayer.R;
 import dark.ash.com.soulmusicplayer.SoulMusicService;
+import dark.ash.com.soulmusicplayer.data.CardPagerAdapter;
 
 public class FullScreenPlayerActivity extends ActionBarCastActivity {
     private static final String TAG = FullScreenPlayerActivity.class.getSimpleName();
@@ -41,10 +46,10 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     private TextView mEndTime;
     private SeekBar mSeekBar;
     private TextView mSongTitle;
+    private CardPagerAdapter mCardPagerAdapter;
     private TextView mSongArtist;
     private ImageView mBackgroundImage;
-    private VectorDrawableCompat mPlayVectorDrawable;
-    private VectorDrawableCompat mPauseVectorDrawable;
+    private ViewPager mMediaPager;
     private String mCurrentArtUri;
     private MediaBrowserCompat mMediaBrowser;
     private ScheduledFuture<?> mScheduleFuture;
@@ -84,6 +89,10 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         }
     };
 
+    private static float dpToPixels(int dp, Context context) {
+        return dp * (context.getResources().getDisplayMetrics().density);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +103,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         }
 
         mPlayPause = findViewById(R.id.playButtion);
+        mMediaPager = findViewById(R.id.viewPager);
         mSkipNext = findViewById(R.id.playForward);
         mSkipPrev = findViewById(R.id.playBackward);
         mStartTime = findViewById(R.id.startTime);
@@ -101,6 +111,10 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         mSeekBar = findViewById(R.id.seekBar);
         mSongTitle = findViewById(R.id.fullscreen_titleTextView);
         mSongArtist = findViewById(R.id.fullscreen_artistTextView);
+        mCardPagerAdapter = new CardPagerAdapter();
+        mMediaPager.setAdapter(mCardPagerAdapter);
+        mMediaPager.setPageMargin(-32);
+        mMediaPager.setOffscreenPageLimit(3);
         mSkipNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,30 +172,6 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
 
         mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, SoulMusicService.class), mConnectionCallback, null);
 
-    }
-
-    private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
-
-        MediaControllerCompat mediaController = new MediaControllerCompat(FullScreenPlayerActivity.this, token);
-        if (mediaController.getMetadata() == null) {
-            finish();
-            return;
-        }
-        MediaControllerCompat.setMediaController(FullScreenPlayerActivity.this, mediaController);
-        mediaController.registerCallback(mCallback);
-        PlaybackStateCompat state = mediaController.getPlaybackState();
-        updatePlaybackState(state);
-        MediaMetadataCompat metadata = mediaController.getMetadata();
-        if (metadata != null) {
-            updateMediaDescription(metadata.getDescription());
-            updateAlbumArtist(metadata);
-            updateDuration(metadata);
-        }
-        updateProgress();
-        if (state != null && (state.getState() == PlaybackStateCompat.STATE_PLAYING ||
-                state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
-            scheduleSeekbarUpdate();
-        }
     }
 
     private void scheduleSeekbarUpdate() {
@@ -302,5 +292,41 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         }
         mSeekBar.setProgress((int) currentPosition);
     }
+
+    private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
+
+        MediaControllerCompat mediaController = new MediaControllerCompat(FullScreenPlayerActivity.this, token);
+        if (mediaController.getMetadata() == null) {
+            finish();
+            return;
+        }
+        MediaControllerCompat.setMediaController(FullScreenPlayerActivity.this, mediaController);
+        mediaController.registerCallback(mCallback);
+        List<MediaSessionCompat.QueueItem> items = mediaController.getQueue();
+        PlaybackStateCompat state = mediaController.getPlaybackState();
+        updatePlaybackState(state);
+        MediaMetadataCompat metadata = mediaController.getMetadata();
+        if (metadata != null) {
+            updateMediaDescription(metadata.getDescription());
+            updateAlbumArtist(metadata);
+            updateDuration(metadata);
+            mCardPagerAdapter = new CardPagerAdapter(mediaController.getQueue());
+            mMediaPager.setAdapter(mCardPagerAdapter);
+            mMediaPager.getAdapter().notifyDataSetChanged();
+        }
+        updateProgress();
+        if (state != null && (state.getState() == PlaybackStateCompat.STATE_PLAYING ||
+                state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
+            scheduleSeekbarUpdate();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_player_menu, menu);
+        return true;
+    }
+
 
 }

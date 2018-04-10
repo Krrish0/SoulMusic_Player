@@ -11,8 +11,12 @@
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/layout_defaul_margin"
-        android:background="@color/textColorPrimary"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingEnd="@dimen/card_padding"
+        android:paddingLeft="@dimen/card_padding"
+        android:paddingRight="@dimen/card_padding"
+        android:paddingStart="@dimen/card_padding"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +28,7 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
+        app:layout_constraintGuide_percent="0.64" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -70,7 +74,7 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.84" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
@@ -92,7 +96,7 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.87" />
+        app:layout_constraintGuide_percent="1" />
 
     <LinearLayout
         android:id="@+id/control_container"
@@ -116,7 +120,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1"></Space>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/playBackward"
@@ -128,7 +132,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1"></Space>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/playButtion"
@@ -141,7 +145,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1"></Space>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/playForward"
@@ -153,7 +157,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1"></Space>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/shuffleButton"
@@ -179,7 +183,7 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_percent="0.79" />
 
     <SeekBar
         android:id="@+id/seekBar"

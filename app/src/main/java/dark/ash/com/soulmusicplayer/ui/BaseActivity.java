@@ -1,9 +1,14 @@
 package dark.ash.com.soulmusicplayer.ui;
 
+import android.Manifest;
 import android.content.ComponentName;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -64,6 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "Activity onCreate");
+        isStoragePermissionGranted();
         mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, SoulMusicService.class), mConnectionCallback, null);
     }
 
@@ -71,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
     protected void onStart() {
         super.onStart();
         Log.e(TAG, "Activity onStart");
-
+        isStoragePermissionGranted();
         mControlsFragment = (MediaControlsFragment) getSupportFragmentManager().findFragmentById(R.id.media_controls_fragment);
         if (mControlsFragment == null) {
             throw new IllegalStateException("Mising fragments with id");
@@ -142,5 +148,33 @@ public abstract class BaseActivity extends AppCompatActivity implements MediaBro
             mControlsFragment.onConnected();
         }
         onMediaControllerConnected();
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    Log.e(TAG, "Request for Permission");
+                }
+                Log.v(TAG, "Permission is granted");
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                return true;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.v(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
+            //resume tasks needing this permission
+        }
     }
 }
