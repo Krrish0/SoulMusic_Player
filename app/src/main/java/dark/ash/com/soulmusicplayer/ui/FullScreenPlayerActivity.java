@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -14,11 +16,12 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -33,10 +36,11 @@ import dark.ash.com.soulmusicplayer.R;
 import dark.ash.com.soulmusicplayer.SoulMusicService;
 import dark.ash.com.soulmusicplayer.data.CardPagerAdapter;
 
-public class FullScreenPlayerActivity extends ActionBarCastActivity {
+public class FullScreenPlayerActivity extends Fragment {
     private static final String TAG = FullScreenPlayerActivity.class.getSimpleName();
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
+    private static final String QUEUE_FLAG = "dark.ash.soulmusicplayer.queue";
     private final Handler mHandler = new Handler();
     private final ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
     private ImageView mPlayPause;
@@ -48,6 +52,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     private TextView mSongTitle;
     private CardPagerAdapter mCardPagerAdapter;
     private TextView mSongArtist;
+    private Toolbar mToolbar;
     private ImageView mBackgroundImage;
     private ViewPager mMediaPager;
     private String mCurrentArtUri;
@@ -96,21 +101,23 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.full_player_activity);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("");
-        }
+        mMediaBrowser = new MediaBrowserCompat(getActivity(), new ComponentName(getActivity(), SoulMusicService.class), mConnectionCallback, null);
 
-        mPlayPause = findViewById(R.id.playButtion);
-        mMediaPager = findViewById(R.id.viewPager);
-        mSkipNext = findViewById(R.id.playForward);
-        mSkipPrev = findViewById(R.id.playBackward);
-        mStartTime = findViewById(R.id.startTime);
-        mEndTime = findViewById(R.id.endTime);
-        mSeekBar = findViewById(R.id.seekBar);
-        mSongTitle = findViewById(R.id.fullscreen_titleTextView);
-        mSongArtist = findViewById(R.id.fullscreen_artistTextView);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.full_player_activity, container, false);
+        mPlayPause = view.findViewById(R.id.playButtion);
+        mMediaPager = view.findViewById(R.id.viewPager);
+        mSkipNext = view.findViewById(R.id.playForward);
+        mSkipPrev = view.findViewById(R.id.playBackward);
+        mStartTime = view.findViewById(R.id.startTime);
+        mEndTime = view.findViewById(R.id.endTime);
+        mSeekBar = view.findViewById(R.id.seekBar);
+        mSongTitle = view.findViewById(R.id.fullscreen_titleTextView);
+        mSongArtist = view.findViewById(R.id.fullscreen_artistTextView);
         mCardPagerAdapter = new CardPagerAdapter();
         mMediaPager.setAdapter(mCardPagerAdapter);
         mMediaPager.setPageMargin(-32);
@@ -118,23 +125,23 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         mSkipNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaControllerCompat.TransportControls controls = MediaControllerCompat.getMediaController(FullScreenPlayerActivity.this).getTransportControls();
+                MediaControllerCompat.TransportControls controls = MediaControllerCompat.getMediaController(getActivity()).getTransportControls();
                 controls.skipToNext();
             }
         });
         mSkipPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaControllerCompat.TransportControls controls = MediaControllerCompat.getMediaController(FullScreenPlayerActivity.this).getTransportControls();
+                MediaControllerCompat.TransportControls controls = MediaControllerCompat.getMediaController(getActivity()).getTransportControls();
                 controls.skipToPrevious();
             }
         });
         mPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlaybackStateCompat state = MediaControllerCompat.getMediaController(FullScreenPlayerActivity.this).getPlaybackState();
+                PlaybackStateCompat state = MediaControllerCompat.getMediaController(getActivity()).getPlaybackState();
                 if (state != null) {
-                    MediaControllerCompat.TransportControls controls = MediaControllerCompat.getMediaController(FullScreenPlayerActivity.this).getTransportControls();
+                    MediaControllerCompat.TransportControls controls = MediaControllerCompat.getMediaController(getActivity()).getTransportControls();
                     switch (state.getState()) {
                         case PlaybackStateCompat.STATE_PLAYING:
                         case PlaybackStateCompat.STATE_BUFFERING:
@@ -165,13 +172,11 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                MediaControllerCompat.getMediaController(FullScreenPlayerActivity.this).getTransportControls().seekTo(seekBar.getProgress());
+                MediaControllerCompat.getMediaController(getActivity()).getTransportControls().seekTo(seekBar.getProgress());
                 scheduleSeekbarUpdate();
             }
         });
-
-        mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, SoulMusicService.class), mConnectionCallback, null);
-
+        return view;
     }
 
     private void scheduleSeekbarUpdate() {
@@ -193,7 +198,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         if (mMediaBrowser != null) {
             mMediaBrowser.connect();
@@ -201,23 +206,24 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if (mMediaBrowser != null) {
             mMediaBrowser.disconnect();
         }
-        MediaControllerCompat controllerCompat = MediaControllerCompat.getMediaController(FullScreenPlayerActivity.this);
+        MediaControllerCompat controllerCompat = MediaControllerCompat.getMediaController(getActivity());
         if (controllerCompat != null) {
             controllerCompat.unregisterCallback(mCallback);
         }
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         stopSeekbarUpdate();
         mExecutorService.shutdown();
     }
+
 
     private void updateMediaDescription(MediaDescriptionCompat description) {
         if (description == null) {
@@ -252,7 +258,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
             return;
         }
         mLastPlaybackState = state;
-        MediaControllerCompat controllerCompat = MediaControllerCompat.getMediaController(FullScreenPlayerActivity.this);
+        MediaControllerCompat controllerCompat = MediaControllerCompat.getMediaController(getActivity());
         //TODO No Cast Support Yet
 
         switch (state.getState()) {
@@ -295,12 +301,11 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
 
     private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
 
-        MediaControllerCompat mediaController = new MediaControllerCompat(FullScreenPlayerActivity.this, token);
+        MediaControllerCompat mediaController = new MediaControllerCompat(getActivity(), token);
         if (mediaController.getMetadata() == null) {
-            finish();
             return;
         }
-        MediaControllerCompat.setMediaController(FullScreenPlayerActivity.this, mediaController);
+        MediaControllerCompat.setMediaController(getActivity(), mediaController);
         mediaController.registerCallback(mCallback);
         List<MediaSessionCompat.QueueItem> items = mediaController.getQueue();
         PlaybackStateCompat state = mediaController.getPlaybackState();
@@ -319,13 +324,6 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
                 state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
             scheduleSeekbarUpdate();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_player_menu, menu);
-        return true;
     }
 
 

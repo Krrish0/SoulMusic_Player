@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeightLarge"
+    app:cardBackgroundColor="@color/colorPrimaryDark">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/queue_list_albumArt"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="@dimen/layout_defaul_margin"
+            app:civ_border="false"
+            tools:src="@drawable/madlove" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/layout_defaul_margin"
+            android:layout_marginLeft="@dimen/layout_defaul_margin"
+            android:layout_marginStart="@dimen/layout_defaul_margin"
+            android:layout_marginTop="@dimen/layout_defaul_margin"
+            android:layout_toEndOf="@id/queue_list_albumArt"
+            android:layout_toLeftOf="@id/queue_list_menu"
+            android:layout_toRightOf="@id/queue_list_albumArt"
+            android:layout_toStartOf="@id/queue_list_menu"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/queue_list_mediaTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/view_padding_default_all"
+                android:paddingRight="@dimen/view_padding_default_all"
+                android:paddingTop="@dimen/view_padding_default_all"
+                android:singleLine="true"
+                android:textColor="@color/textColorSecondary"
+                tools:text="@string/menu_queue_music"
+                tools:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            <TextView
+                android:id="@+id/queue_list_artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/queue_list_mediaTitle"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/view_padding_default_all"
+                android:paddingRight="@dimen/view_padding_default_all"
+                android:paddingTop="@dimen/view_padding_default_all"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/textColorSecondary"
+                tools:text="@string/menu_queue_music" />
+
+            <View
+                android:id="@+id/seperator"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/queue_list_artist"
+                android:layout_alignTop="@id/queue_list_artist"
+                android:layout_below="@id/queue_list_mediaTitle"
+                android:layout_toEndOf="@id/queue_list_artist"
+                android:layout_toRightOf="@id/queue_list_artist"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/queue_list_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/queue_list_mediaTitle"
+                android:layout_toEndOf="@id/seperator"
+                android:layout_toRightOf="@id/seperator"
+                android:paddingEnd="@dimen/view_padding_default_all"
+                android:paddingLeft="@dimen/view_padding_default_all"
+                android:paddingRight="@dimen/view_padding_default_all"
+                android:paddingTop="@dimen/view_padding_default_all"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/textColorSecondary"
+                tools:text="@string/menu_queue_music" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/queue_list_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/queue_list_albumArt"
+            android:layout_marginLeft="@dimen/layout_defaul_margin"
+            android:layout_marginRight="@dimen/layout_defaul_margin"
+            android:src="@drawable/ic_more_vert_white_24dp" />
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

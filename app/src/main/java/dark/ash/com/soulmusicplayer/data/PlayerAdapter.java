@@ -41,7 +41,6 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         String album = bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Unknown");
         Uri albumImage = mSongList.get(position).getDescription().getIconUri();
         String genre = bundle.getString(MediaMetadataCompat.METADATA_KEY_GENRE, "Unknown");
-
         holder.songTitle.setText(title);
         holder.songAlbum.setText(album);
         holder.songGenre.setText(genre);
@@ -76,7 +75,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
-        public ImageView songAlbumImage;
+        private ImageView songAlbumImage;
         public TextView songTitle;
         public TextView songAlbum;
         public TextView songGenre;
