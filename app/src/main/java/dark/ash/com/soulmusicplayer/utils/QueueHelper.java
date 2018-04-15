@@ -11,6 +11,7 @@ import java.util.List;
 import dark.ash.com.soulmusicplayer.VoiceSearchParams;
 import dark.ash.com.soulmusicplayer.model.MusicProvider;
 
+import static dark.ash.com.soulmusicplayer.utils.MediaIDHelper.MEDIA_ID_MUSICS_BY_ALL;
 import static dark.ash.com.soulmusicplayer.utils.MediaIDHelper.MEDIA_ID_MUSICS_BY_SEARCH;
 
 /**
@@ -44,6 +45,8 @@ public class QueueHelper {
         if (categoryType.equals(MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE)) {
             tracks = musicProvider.getMusicByGenre(categoryValue);
         } else if (categoryType.equals(MEDIA_ID_MUSICS_BY_SEARCH)) {
+            tracks = musicProvider.searchMusicBySongTitle(categoryValue);
+        } else if (categoryType.equals(MEDIA_ID_MUSICS_BY_ALL)) {
             tracks = musicProvider.searchMusicBySongTitle(categoryValue);
         }
         if (tracks == null) {

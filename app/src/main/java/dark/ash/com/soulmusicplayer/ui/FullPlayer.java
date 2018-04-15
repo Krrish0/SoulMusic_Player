@@ -36,6 +36,8 @@ public class FullPlayer extends ActionBarCastActivity {
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
                 Log.e(TAG, "onMetadataChanged");
+                FullScreenPlayerActivity fragment = (FullScreenPlayerActivity) getSupportFragmentManager().findFragmentByTag(FullScreenPlayerActivity.QUEUE_FLAG);
+                fragment.onMetadataChanged(metadata);
             }
         }
     };
@@ -66,7 +68,7 @@ public class FullPlayer extends ActionBarCastActivity {
         mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, SoulMusicService.class), mConnectionCallback, null);
 
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.add(R.id.fragment_container, new FullScreenPlayerActivity());
+        transaction.add(R.id.fragment_container, new FullScreenPlayerActivity(), FullScreenPlayerActivity.QUEUE_FLAG);
         transaction.addToBackStack("FullScreenPlayer");
         transaction.commit();
 

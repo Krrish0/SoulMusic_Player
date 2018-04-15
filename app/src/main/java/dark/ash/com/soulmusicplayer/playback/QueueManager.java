@@ -54,6 +54,7 @@ public class QueueManager {
     }
 
     public boolean isSameBrowsingCategory(@NonNull String mediaID) {
+        Log.e(TAG, "isSameBrowsingCategory is Called ");
         String[] newBrowseHierarchy = MediaIDHelper.getHierarchy(mediaID);
         MediaSessionCompat.QueueItem current = getCurrentMusic();
         if (current == null) {
@@ -111,6 +112,7 @@ public class QueueManager {
 
         boolean canResueQueue = false;
         if (isSameBrowsingCategory(mediaID)) {
+            Log.e(TAG, "canReuseQueue is set");
             canResueQueue = setCurrentQueueItem(mediaID);
         }
 

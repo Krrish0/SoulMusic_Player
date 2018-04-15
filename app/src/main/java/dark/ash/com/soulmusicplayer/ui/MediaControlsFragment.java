@@ -39,6 +39,7 @@ public class MediaControlsFragment extends Fragment {
             MediaControlsFragment.this.onPlaybackStateChanged(state);
         }
 
+
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata == null) {

@@ -10,13 +10,13 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dark.ash.com.soulmusicplayer.R;
+import dark.ash.com.soulmusicplayer.data.BrowserAdapter;
 
 /**
  * Created by hp on 27-03-2018.
@@ -36,6 +37,7 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
     private static final String ARG_MEDIA_ID = "media_id";
 
     private String mMediaId;
+    private BrowserAdapter mBrowserAdapter;
     private MediaFragmentListener mMediaFragmentListener;
     private BrowseAdapter mAdapter;
     //Receives callbacks from the MediaController
@@ -47,7 +49,6 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
                 return;
             }
             Log.e(TAG, "recieived metadata change to media");
-            mAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -55,7 +56,6 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
             super.onPlaybackStateChanged(state);
             Log.e(TAG, "Received state change: " + state);
             //TODO Check user for Visible Errors(false);
-            mAdapter.notifyDataSetChanged();
         }
     };
 
@@ -64,11 +64,12 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
                 @Override
                 public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
                     try {
-                        mAdapter.clear();
+                        //mAdapter.clear();
                         Log.e(TAG, "fragment onChildrenLoaded , parentId=" + parentId);
                         Log.e(TAG, children.toString());
-                        mAdapter.addAll(children);
-                        mAdapter.notifyDataSetChanged();
+                        //mAdapter.addAll(children);
+                        mBrowserAdapter.updateData(children);
+                        //mAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         Log.e(TAG, "Error on ChildrenLoaded" + e);
                     }
@@ -92,18 +93,32 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         Log.e(TAG, "fragment.onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
-        mAdapter = new BrowseAdapter(getActivity());
+        //mAdapter = new BrowseAdapter(getActivity());
 
-        ListView listView = rootView.findViewById(R.id.fragment_list);
-        listView.setAdapter(mAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        RecyclerView listView = rootView.findViewById(R.id.fragment_list);
+        listView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        listView.setLayoutManager(layoutManager);
+
+
+        BrowserAdapter.RecyclerViewClickListener listener = new BrowserAdapter.RecyclerViewClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MediaBrowserCompat.MediaItem item = mAdapter.getItem(position);
-                mMediaFragmentListener.onMediaItemSelected(item);
+            public void onClick(MediaBrowserCompat.MediaItem mediaItem) {
+                mMediaFragmentListener.onMediaItemSelected(mediaItem);
             }
-        });
+        };
+        mBrowserAdapter = new BrowserAdapter(getContext(), listener, new ArrayList<MediaBrowserCompat.MediaItem>());
+
+        listView.setAdapter(mBrowserAdapter);
+
+        //listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //    @Override
+        //    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //        MediaBrowserCompat.MediaItem item = mAdapter.getItem(position);
+        //        mMediaFragmentListener.onMediaItemSelected(item);
+        //    }
+        //});
         return rootView;
     }
 
@@ -209,4 +224,5 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
             return convertView;
         }
     }
+
 }

@@ -40,7 +40,7 @@ public class FullScreenPlayerActivity extends Fragment {
     private static final String TAG = FullScreenPlayerActivity.class.getSimpleName();
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
-    private static final String QUEUE_FLAG = "dark.ash.soulmusicplayer.queue";
+    public static final String QUEUE_FLAG = "dark.ash.soulmusicplayer.queue";
     private final Handler mHandler = new Handler();
     private final ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
     private ImageView mPlayPause;
@@ -69,19 +69,30 @@ public class FullScreenPlayerActivity extends Fragment {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             Log.e(TAG, "onPlaybackState changed" + state);
-            updatePlaybackState(state);
+            FullScreenPlayerActivity.this.onPlaybackStateChanged(state);
         }
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
+            Log.e(TAG, "onMetadataChanged is Called");
+            Log.e(TAG, "" + metadata);
             if (metadata != null) {
-                updateMediaDescription(metadata.getDescription());
-                updateAlbumArtist(metadata);
-                updateDuration(metadata);
+                FullScreenPlayerActivity.this.onMetadataChanged(metadata);
             }
         }
     };
 
+    public void onPlaybackStateChanged(PlaybackStateCompat state) {
+        FullScreenPlayerActivity.this.updatePlaybackState(state);
+    }
+
+    public void onMetadataChanged(MediaMetadataCompat metadata) {
+        if (metadata != null) {
+            FullScreenPlayerActivity.this.updateMediaDescription(metadata.getDescription());
+            FullScreenPlayerActivity.this.updateAlbumArtist(metadata);
+            FullScreenPlayerActivity.this.updateDuration(metadata);
+        }
+    }
     private final MediaBrowserCompat.ConnectionCallback mConnectionCallback = new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
@@ -222,6 +233,7 @@ public class FullScreenPlayerActivity extends Fragment {
         super.onDestroy();
         stopSeekbarUpdate();
         mExecutorService.shutdown();
+        getActivity().finish();
     }
 
 
