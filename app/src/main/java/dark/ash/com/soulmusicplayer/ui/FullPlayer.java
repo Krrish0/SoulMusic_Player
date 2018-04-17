@@ -12,7 +12,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,14 +53,12 @@ public class FullPlayer extends ActionBarCastActivity {
         }
     };
     private FragmentManager mFragmentManager = getSupportFragmentManager();
-    private Toolbar mToolbar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_player);
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        initializeToolbar();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("NowPlaying");
         }

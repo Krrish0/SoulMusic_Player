@@ -14,7 +14,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import dark.ash.com.soulmusicplayer.R;
@@ -24,7 +23,7 @@ import dark.ash.com.soulmusicplayer.SoulMusicService;
  * Created by hp on 26-03-2018.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements MediaBrowserProvider {
+public abstract class BaseActivity extends ActionBarCastActivity implements MediaBrowserProvider {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
 

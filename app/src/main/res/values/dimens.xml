@@ -3,6 +3,8 @@
     <dimen name="layout_defaul_margin">8dp</dimen>
     <dimen name="activity_horizontal_margin_small">8dp</dimen>
     <dimen name="activity_horizotal_margin_large">16dp</dimen>
+    <dimen name="activity_vertical_margin_small">8dp</dimen>
+    <dimen name="activity_vertical_margin_large">16dp</dimen>
     <dimen name="controls_play_button_height">64dp</dimen>
     <dimen name="controls_play_button_width">64dp</dimen>
     <dimen name="controls_button_height">32dp</dimen>
@@ -13,4 +15,8 @@
     <dimen name="activity_default_margin_bottom">8dp</dimen>
     <dimen name="view_padding_default_all">8dp</dimen>
     <dimen name="card_padding">34dp</dimen>
+    <dimen name="tab_max_width">264dp</dimen>
+    <dimen name="tab_padding_bottom">16dp</dimen>
+    <dimen name="tab_label">14sp</dimen>
+    <dimen name="custom_tab_layout_height">72dp</dimen>
 </resources>

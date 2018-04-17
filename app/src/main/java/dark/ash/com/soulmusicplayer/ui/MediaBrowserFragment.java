@@ -1,12 +1,10 @@
 package dark.ash.com.soulmusicplayer.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -16,8 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,7 +35,6 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
     private String mMediaId;
     private BrowserAdapter mBrowserAdapter;
     private MediaFragmentListener mMediaFragmentListener;
-    private BrowseAdapter mAdapter;
     //Receives callbacks from the MediaController
     private final MediaControllerCompat.Callback mMediaControllerCallback = new MediaControllerCompat.Callback() {
         @Override
@@ -196,33 +191,6 @@ public class MediaBrowserFragment extends android.support.v4.app.Fragment {
         void onMediaItemSelected(MediaBrowserCompat.MediaItem item);
 
         void setToobarTitle(CharSequence title);
-    }
-
-    private static class BrowseAdapter extends ArrayAdapter<MediaBrowserCompat.MediaItem> {
-
-        private TextView mArtistView;
-        private TextView mSongsView;
-
-        public BrowseAdapter(Activity context) {
-            super(context, R.layout.media_browse_list, new ArrayList<MediaBrowserCompat.MediaItem>());
-            Log.e(TAG, "BrowserAdapter Constructor is Called");
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            MediaBrowserCompat.MediaItem item = getItem(position);
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.media_browse_list, parent, false);
-                mSongsView = convertView.findViewById(R.id.text_view_songname);
-                mArtistView = convertView.findViewById(R.id.text_view_artist);
-            }
-
-            MediaDescriptionCompat description = item.getDescription();
-            mSongsView.setText(description.getTitle());
-            mArtistView.setText(description.getSubtitle());
-            return convertView;
-        }
     }
 
 }

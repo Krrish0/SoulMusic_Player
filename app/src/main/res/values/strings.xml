@@ -11,4 +11,8 @@
     <string name="browse_musics_by_all_songs">All Songs</string>
     <string name="browse_genre_subtitle">Songs by genre</string>
     <string name="menu_queue_music">Queue Music</string>
+    <string name="navigation_drawer_allmusic_home">Home</string>
+    <string name="media_route_menu_title">Play on&#8230;</string>
+    <string name="open_content_drawer">Open the main menu</string>
+    <string name="close_content_drawer">Close the main menu</string>
 </resources>

@@ -1,24 +1,25 @@
 package dark.ash.com.soulmusicplayer;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
+import android.support.design.widget.TabLayout;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
-import android.text.TextUtils;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 
+import dark.ash.com.soulmusicplayer.data.SoulPagerAdapter;
 import dark.ash.com.soulmusicplayer.ui.BaseActivity;
-import dark.ash.com.soulmusicplayer.ui.MediaBrowserFragment;
+import dark.ash.com.soulmusicplayer.ui.FragmentBase;
 
-public class SoulActivity extends BaseActivity implements MediaBrowserFragment.MediaFragmentListener {
+public class SoulActivity extends BaseActivity implements FragmentListener {
 
     private static final String TAG = SoulActivity.class.getSimpleName();
     private static final String SAVED_MEDIA_ID = "dark.ash.com.soulmusicplayer.MEDIA_ID";
     private static final String FRAGMENT_TAG = "soul_list_container";
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private SoulPagerAdapter mAdapter;
 
     private Bundle mVoiceSearchParamsn;
 
@@ -27,64 +28,69 @@ public class SoulActivity extends BaseActivity implements MediaBrowserFragment.M
         super.onCreate(savedInstanceState);
         Log.e(TAG, "Activity onCreate");
         setContentView(R.layout.activity_soul);
-        initializeFromParams(savedInstanceState, getIntent());
+        initializeToolbar();
+        viewPager = findViewById(R.id.soul_viewpager);
+        mAdapter = new SoulPagerAdapter(getSupportFragmentManager(), 6);
+        viewPager.setAdapter(mAdapter);
+        tabLayout = findViewById(R.id.soul_tab_bar);
+        tabLayout.setupWithViewPager(viewPager);
+        //initializeFromParams(savedInstanceState, getIntent());
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        String mediaId = getMediaId();
-        if (mediaId != null) {
-            outState.putString(SAVED_MEDIA_ID, mediaId);
-        }
-        super.onSaveInstanceState(outState);
-    }
+    //@Override
+    //public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+    //    String mediaId = getMediaId();
+    //    if (mediaId != null) {
+    //        outState.putString(SAVED_MEDIA_ID, mediaId);
+    //    }
+    //    super.onSaveInstanceState(outState);
+    //}
 
-    protected void initializeFromParams(Bundle savedInstantState, Intent intent) {
-        Log.e(TAG, "initializeFromParams is called");
-        String mediaId = null;
-
-        if (intent.getAction() != null && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
-            mVoiceSearchParamsn = intent.getExtras();
-            Log.e(TAG, "Starting from voice Search");
-        } else {
-            if (savedInstantState != null) {
-                mediaId = savedInstantState.getString(SAVED_MEDIA_ID);
-            }
-        }
-        navigateToBrowser(mediaId);
-    }
-
+    // protected void initializeFromParams(Bundle savedInstantState, Intent intent) {
+    //     Log.e(TAG, "initializeFromParams is called");
+    //     //String mediaId = null;
+    //
+    //     if (intent.getAction() != null && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
+    //         mVoiceSearchParamsn = intent.getExtras();
+    //         Log.e(TAG, "Starting from voice Search");
+    //     } else {
+    //         if (savedInstantState != null) {
+    //            // mediaId = savedInstantState.getString(SAVED_MEDIA_ID);
+    //         }
+    //     }
+    //     //navigateToBrowser(mediaId);
+    // }
+    //
     private void navigateToBrowser(String mediaId) {
 
         Log.e(TAG, "navigate to Browser, mediaId=" + mediaId);
-        MediaBrowserFragment fragment = getBrowseFragment();
-
-        if (fragment == null || !TextUtils.equals(fragment.getMediaId(), mediaId)) {
-            Log.e(TAG, "fragment == null");
-            fragment = new MediaBrowserFragment();
-            fragment.setMediaId(mediaId);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.list_container, fragment, FRAGMENT_TAG);
-            if (mediaId != null) {
-                transaction.addToBackStack(null);
-            }
-            transaction.commit();
-        }
+        //if (fragment == null || !TextUtils.equals(fragment.getMediaId(), mediaId)) {
+        //    Log.e(TAG, "fragment == null");
+        //    fragment = mAdapter.getCurrentFragment();
+        //    fragment.setMediaId(mediaId);
+        //    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //    transaction.replace(R.id.list_container, fragment, FRAGMENT_TAG);
+        //    if (mediaId != null) {
+        //        transaction.addToBackStack(null);
+        //    }
+        //    transaction.commit();
+        //
+        // }
 
 
     }
 
 
     public String getMediaId() {
-        MediaBrowserFragment fragment = getBrowseFragment();
+        FragmentBase fragment = getBrowseFragment();
         if (fragment == null) {
             return null;
         }
         return fragment.getMediaId();
     }
 
-    private MediaBrowserFragment getBrowseFragment() {
-        return (MediaBrowserFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+    private FragmentBase getBrowseFragment() {
+        return mAdapter.getCurrentFragment();
     }
 
     @Override
@@ -112,5 +118,6 @@ public class SoulActivity extends BaseActivity implements MediaBrowserFragment.M
         //TODO Add functionality of SearchParameters Later
         getBrowseFragment().onConnected();
     }
+
 
 }
